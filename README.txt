@@ -19,8 +19,11 @@ Edit /etc/prometheus/prometheus.yml and add:
     basic_auth:                                     # only if console is password protected, see below
       username: xxxxxxx                             # only if console is password protected, see below
       password: 00000000000000000000000000000000    # only if console is password protected, see below
+    scheme: https                                   # only if console is SSL, see below
+    tls_config:                                     # only if console is SSL, see below
+      insecure_skip_verify: true                    # only if console is SSL, see below
     static_configs:
-      - targets: ['localhost:7657']
+      - targets: ['localhost:7657']                 # or 7667 or other SSL port
 
 And then tell prometheus to reload the config:
 
@@ -59,3 +62,24 @@ or generate the MD5 hash as follows:
 
 When you install the plugin for the first time, your browser will ask for
 the MD5 password to access the plugin. Enter the 32-digit hash.
+
+For remote router instances, SSL console is recommended so that
+the Basic authentication is protected.
+
+
+SSL console
+-----------
+
+To enable SSL console, edit the console command line on /configclients
+to add -s port, for example:
+
+  net.i2p.router.web.RouterConsoleRunner 7657 0.0.0.0 -s 7667 127.0.0.1 ./webapps/
+
+This requires routerconsole.advanced=true in router.config.
+Alternatively, edit the file
+
+  ~/.i2p/clients.config.d/00-net.i2p.router.web.RouterConsoleRunner-clients.config
+
+Restart required in either case.
+
+Then add the prometheus config as above.

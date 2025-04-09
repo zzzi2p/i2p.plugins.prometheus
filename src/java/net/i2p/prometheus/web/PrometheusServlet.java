@@ -193,6 +193,7 @@ public class PrometheusServlet extends BasicServlet {
             out.write("<tr id=\"message\"><td colspan=\"5\" align=\"center\"><b>" + msg + "</b></td></tr>\n");
         out.write("</table>\n");
         if (c != null) {
+            out.write("<p><a href=\"/prometheus/metrics\">View raw metrics</a></p>\n");
             out.write("<tr id=\"configsection\"><td>\n<hr>\n<div id=\"configtitle\"><b>Configuration</b>&nbsp;\n" +
                       "<a class=\"script\" id=\"expand\" href=\"#\" onclick=\"clean();expand();\">" +
                       "<img alt=\"Expand\" src=\"/prometheus/resources/images/expand.png\" title=\"Expand\"></a>\n" +
@@ -222,6 +223,9 @@ public class PrometheusServlet extends BasicServlet {
                    "    static_configs:\n" +
                    "      - targets: ['localhost:").append(port).append("']\n" +
                    "</pre>\n");
+        buf.append("<p>For password-protected or SSL consoles, see the file <tt>")
+           .append(_context.getConfigDir())
+           .append("/plugins/prometheus/README.txt</tt> for instructions.</p>\n");
         buf.append("</div>\n");
         return buf.toString();
     }
