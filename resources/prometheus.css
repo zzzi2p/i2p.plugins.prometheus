@@ -1,0 +1,557 @@
+/* I2P Socks Proxy Plugin Theme by dr|z3d 2022 */
+
+:root {
+  --a: #3b6bbf;
+  --active: #f30;
+  --bevel: inset 0 0 0 1px #d0d0da, 0 0 1px 1px #97a2ce;
+  --bg: #a4a4cb;
+  --bg_status: var(--bg_table);
+  --bg_table: #f2f2ff;
+  --bodybg: var(--bg) url(images/tile2.png) fixed;
+  --bodyfont: 10.5pt Droid Sans, Open Sans, Noto Sans, Ubuntu, Segoe UI, Verdana, Helvetica Neue, sans-serif;
+  --border: 1px solid #6c6c93;
+  --border_inner: 1px solid #9898b3;
+  --btn_border: 1px solid #97a2ce;
+  --btn_hover: linear-gradient(180deg, #ddd, #fff);
+  --btn_active: var(--btn_hover);
+  --btn: linear-gradient(180deg, #fff, #e8e8ff);
+  --btn_shadow_active: var(--highlight), inset 4px 4px 4px rgba(0,0,0,.5);
+  --container: linear-gradient(90deg, #fff, #efefff, #fff);
+  --filter_shadow: drop-shadow(0 0 1px var(--hover)) drop-shadow(0 0 2px var(--hover));
+  --highlight: inset 0 0 0 1px #fff;
+  --highlight_notice: var(--highlight), inset 0 0 1px 1px #900, 0 0 2px 2px rgba(0,0,0,.2);
+  --hover: #f60;
+  --ink: #4f4f63;
+  --ink_light: #5b5b71;
+  --ink_status_hover: #292d3d;
+  --input_text: var(--bg_table);
+  --input_text_focus: #fff;
+  --monospaced: Droid Sans Mono, Noto Mono, DejaVu Sans Mono, Lucida Console, monospace;
+  --outline: 0 0 0 1px rgba(255,96,0,.5);
+  --rowEven: repeating-linear-gradient(135deg, rgba(252,252,255,.5) 2px, rgba(240, 240, 255, .3) 3px, #fafaff 5px) #f0f0ff;
+  --rowOdd: repeating-linear-gradient(45deg, rgba(255,255,255,.5) 2px, rgba(220, 220, 255, .3) 3px, #fafaff 5px), #fafaff;
+  --scrollbar_hover: rgba(16,16,48,.4) var(--bg);
+  --scrollbar: rgba(16,16,48,.3) rgba(0,0,0,0);
+  --selected: #77f;
+  --shadow_table: 0 0 1px 0 #bbc;
+  --shadow_input: var(--highlight), inset 1px 1px 1px 1px rgba(0,0,0,.6);
+  --th: linear-gradient(180deg, #fcfcff 50%, #f2f2ff 50%, #efefff);
+  --th_sub: linear-gradient(180deg, #fdfdff, #f0f0ff);
+  --txtshadow_title: 0 1px 1px #fff, 0 -1px 1px #e2e2ff, 0 2px 1px #ddf;
+  --visited: #2c4e8f;
+  --configure: url(images/configure.svg);
+  --cross: url(images/cross.svg);
+  --infohelp: url(images/infohelp.svg);
+  --socks: url(images/prometheus.svg);
+  --starting: url(images/starting.svg);
+  --tick: url(images/tick.svg);
+}
+
+@media (prefers-color-scheme: light) {
+  #status .subtitle + tr, #status .subtitle + tr td {
+    border-bottom: none !important;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --a: #3b6bbf;
+    --active: #f30;
+    --bevel: inset 0 0 0 1px #000, 0 0 1px 1px #111, 0 0 0 2px #000;
+    --bodyfont: 10pt Droid Sans, Open Sans, Noto Sans, Ubuntu, Segoe UI, Verdana, Helvetica Neue, sans-serif;
+    --bg: #111;
+    --bg_status: #504a4a;
+    --bg_table: #222;
+    --bodybg: var(--bg);
+    --border: 1px solid #444;
+    --border_inner: 1px solid #181818;
+    --btn_border: 1px solid #97a2ce;
+    --btn_active: linear-gradient(180deg, #333, #444);
+    --btn_hover: linear-gradient(180deg, #444, #333 50%, #111);
+    --btn: linear-gradient(180deg, #333, #181818);
+    --container: #222;
+    --highlight: inset 0 0 0 1px rgba(255,255,255,.1);
+    --highlight_notice: var(--highlight), inset 0 0 1px 1px #300, 0 0 2px 2px rgba(0,0,0,.5);
+    --hover: #f60;
+    --ink: #ddd;
+    --ink_light: #eee;
+    --ink_status_hover: #fff;
+    --input_text_focus: #333;
+    --rowEven: #555;
+    --rowOdd: #444;
+    --scrollbar_hover: rgba(16,16,48,.4) var(--bg);
+    --scrollbar: rgba(16,16,48,.3) rgba(0,0,0,0);
+    --selected: #d30;
+    --shadow_table: 0 0 0 1px #222, 0 0 0 8px #333;
+    --th: linear-gradient(180deg, #303030 50%, #222 50%, #111);
+    --th_sub: linear-gradient(180deg, #333, #222);
+    --txtshadow_title: 0 0 0 1px #000;
+    --visited: #2c4e8f;
+  }
+  #expand img, #collapse img {
+    filter: invert(1) opacity(.7);
+  }
+  #expand:hover img, #collapse:hover img {
+    filter: invert(1) opacity(.95) var(--filter_shadow) !important;
+  }
+  #status {
+    border-collapse: separate;
+    border-spacing: 0;
+    border: var(--border) !important;
+  }
+  thead th, #configtitle {
+    box-shadow: inset 0 0 0 1px #444;
+  }
+  #expand, #collapse {
+    border-left: var(--border) !important;
+  }
+  #container {
+    padding: 0 !important;
+  }
+}
+
+html, body {
+  background: var(--bodybg);
+}
+
+body {
+  margin: 10px;
+  padding: 0;
+  min-width: 600px;
+  color: var(--ink);
+}
+
+body, table {
+  font: var(--bodyfont);
+}
+
+html {
+  scrollbar-color: var(--scrollbar);
+}
+
+html:hover {
+  scrollbar-color: var(--scrollbar_hover);
+}
+
+::selection {
+  text-shadow: none;
+  color: #fff;
+  background: var(--selected);
+}
+
+hr, .hidden {
+  display: none;
+}
+
+a:link, .node a:visited {
+  color: var(--a);
+  text-decoration: none;
+  outline: none;
+}
+
+a:visited {
+  color: var(--visited);
+  text-decoration: none;
+}
+
+a:hover, a:focus {
+  color: var(--hover);
+}
+
+a:active {
+  color: var(--active);
+}
+
+#container {
+  margin: 15px 5px;
+  padding: 8px;
+  max-width: 1920px;
+  border: var(--border);
+  box-shadow: var(--bevel);
+  background: var(--container);
+}
+
+code {
+  padding: 0 2px;
+  font-family: var(--monospaced);
+  color: #373;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  border: var(--border_inner);
+  background: var(--bg_table);
+}
+
+tr {
+  border: var(--border_inner);
+}
+
+#configtitle {
+  font-size: 13pt;
+}
+
+.subtitle th {
+  padding: 6px 8px;
+  letter-spacing: normal;
+  text-transform: none;
+  font-size: 10.5pt;
+  background: var(--th_sub);
+}
+
+#status {
+  border: var(--border_inner);
+}
+
+#status th,  #status td {
+  text-align: center;
+}
+
+#status th, #status td {
+  width: 20%;
+}
+
+#status td {
+  padding: 9px 8px;
+  border: var(--border_inner);
+  background: var(--bg_status);
+}
+
+#status td:first-child {
+  text-transform: lowercase;
+}
+
+#status td:first-child::first-letter {
+  text-transform: uppercase;
+}
+
+#status td::before {
+  display: none;
+}
+
+#starting, #running, #registered, #notregistered {
+  vertical-align: middle;
+  font-size: 0;
+}
+
+#starting::before, #running::before, #registered::before, #notregistered::before {
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  vertical-align: middle;
+  background: var(--starting) no-repeat center center / 22px;
+  content: "";
+  animation: spin linear 3s forwards infinite;
+}
+
+#running::before, #registered::before {
+  background: var(--tick) no-repeat center center / 16px;
+  animation: none;
+}
+
+#notregistered::before {
+  background: var(--cross) no-repeat center center / 16px;
+  animation: none;
+}
+
+input.accept {
+  padding: 5px 9px 2px 26px;
+  background: var(--tick) no-repeat 9px center / 16px;
+}
+
+@keyframes spin {
+  from {transform: rotate(0)}
+  to {transform: rotate(360deg)}
+}
+
+table table tr:not(.stream):nth-child(odd), #configuration tr:not(.stream):nth-child(odd) {
+  background: var(--rowOdd);
+}
+
+table table tr:not(.stream):nth-child(even), #configuration tr:not(.stream):nth-child(even) {
+  background: var(--rowEven);
+}
+
+td {
+  padding: 8px;
+}
+
+table table td::before {
+  min-height: 20px;
+  display: inline-block;
+  vertical-align: middle;
+  content: "";
+}
+
+table table td, #configuration table td {
+  padding: 5px 8px;
+}
+
+th, #configtitle {
+  padding: 6px 8px;
+  text-align: left;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  font-size: 11pt;
+  background: var(--th);
+}
+
+#title {
+  padding: 10px 8px 10px 44px;
+  font-size: 16pt;
+  letter-spacing: .08em !important;
+  line-height: 1.1;
+  text-shadow: var(--txtshadow_title);
+  background: var(--socks) no-repeat 6px center / 32px, var(--th);
+}
+
+#configsection, #configsection td {
+  border: none;
+}
+
+#configsection td {
+  padding: 0;
+}
+
+#configsection table td {
+  padding: 10px;
+  vertical-align: text-bottom;
+}
+
+#configuration {
+  position: relative;
+  border: none;
+}
+
+#configuration tr {
+  border-left: none !important;
+  border-right: none !important;
+}
+
+#configuration td:first-child {
+  border-left: none !important;
+}
+
+#configuration td:last-child {
+  border-right: none !important;
+}
+
+#configuration tr:last-child, #configuration tr:last-child td {
+  border-bottom: none !important;
+}
+
+#configuration th {
+  width: 25%;
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+#configuration td:first-child {
+  border-left: none !important;
+}
+
+#configuration td:last-child {
+  border-right: none !important;
+  line-height: 1.1;
+}
+
+#formaction td {
+  padding: 12px !important;
+  background: var(--th_sub);
+}
+
+#configtitle {
+  margin: -1px 0;
+  padding: 8px 8px 8px 32px;
+  width: 100%;
+  display: inline-block;
+  position: relative;
+  z-index: 99;
+  box-sizing: border-box;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  font-size: 12.5pt;
+  font-weight: bold;
+  border: var(--border_inner);
+  border-left: none;
+  border-right: none;
+  background: var(--configure) no-repeat 8px center / 18px, var(--th_sub) !important;
+  contain: paint;
+}
+
+#expand, #collapse {
+  display: inline-block !important;
+  position: absolute;
+  top: calc(50% - 18px);
+  right: -1px;
+  font-size: 0;
+  border-left: var(--border_inner);
+}
+
+#collapse {
+  display: none !important;
+}
+
+#expand img, #collapse img {
+  padding: 15px;
+  width: 8px;
+  height: 8px;
+  display: inline-block;
+  vertical-align: middle;
+  transform: scaleX(.6);
+}
+
+#collapse img {
+  transform: scaleY(.6);
+}
+
+#expand:hover img, #collapse:hover img {
+  filter: var(--filter_shadow);
+  transform: scaleY(1.2) scaleX(.8);
+}
+
+#collapse:hover img {
+  transform: scaleX(1.2) scaleY(.8);
+}
+
+#expand::before, #collapse::before {
+  content: "";
+  display: inline-block;
+  height: 100%;
+  width: 100%;
+  background: #f00;
+}
+
+#configuration td:nth-child(2) code {
+  line-height: 1.15;
+  color: #050;
+}
+
+#configuration td:nth-child(2) code, #configuration td:nth-child(2) .nowrap {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.nowrap {
+  display: inline-block;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+#configuration .nowrap {
+  font-style: italic;
+  color: var(--ink);
+}
+
+#configuration i {
+  margin-right: 1px;
+}
+
+#configuration tr {
+  border-top: var(--border_inner);
+  border-bottom: var(--border_inner);
+}
+
+td, #configuration td {
+  border: var(--border_inner);
+  border-left-style: solid;
+  border-right-style: solid;
+  box-shadow: var(--highlight) !important;
+}
+
+td:first-child {
+  border-left: var(--border_inner) !important;
+}
+
+td:last-child {
+  border-right: var(--border_inner) !important;
+}
+
+#configuration td:first-child {
+  text-align: right;
+}
+
+#formaction {
+  background: var(--th);
+}
+
+input[type=text], input[type=password], input[type=submit] {
+  font: var(--bodyfont);
+  border: var(--border_inner);
+}
+
+input[type=text], input[type=password] {
+  padding: 7px 10px;
+  color: var(--ink_lighter);
+  background: var(--bg_table);
+  box-shadow: var(--shadow_input);
+}
+
+input[type=text]:focus, input[type=password]:focus {
+  color: var(--ink);
+  background: var(--bg_table);
+  box-shadow: var(--btn_shadow_active), 0 0 0 1px rgba(255,96,0,.7);
+  outline: none;
+}
+
+input[type=submit] {
+  padding: 7px 14px 7px 30px;
+  color: var(--ink);
+  border-radius: 4px;
+  box-shadow: var(--highlight);
+  background: var(--tick) no-repeat 12px center / 12px, var(--btn);
+  cursor: pointer;
+}
+
+input[type=submit]:hover {
+  color: var(--ink_lighter);
+  background: var(--tick) no-repeat 12px center / 12px, var(--btn_hover);
+  box-shadow: var(--highlight), var(--outline);
+}
+
+input[type=submit]:active {
+  box-shadow: var(--btn_shadow_active), var(--outline);
+  background: var(--tick) no-repeat 12px center / 12px, var(--btn_active);
+}
+
+#message {
+  padding: 45px 15px 20px;
+  width: 400px;
+  display: inline-block;
+  position: absolute;
+  top: 0;
+  right: -1000px;
+  text-align: center;
+  border: var(--border);
+  box-shadow: var(--highlight_notice);
+  background: var(--infohelp) no-repeat center 22px / 24px, var(--th_sub);
+  animation: slideLeft .75s ease-in .1s both, toast 2s ease 4s both;
+  filter: opacity(0);
+}
+
+#message td {
+  border: none !important;
+  box-shadow: none !important;
+  background: none;
+}
+
+@keyframes toast{
+  from {top: 0;}
+  to {top: -1000px}
+}
+
+@keyframes slideLeft {
+  from {top: 0; right: -800px; filter: opacity(0)}
+  to {top: 0; right: 0; filter: opacity(1)}
+}
+
+@media screen and (max-width: 1000px) {
+  body {margin: 3px}
+  body, table {font-size: 9.5pt}
+  #container {margin: 0}
+  #title {font-size: 14pt}
+  #configtitle {font-size: 12pt}
+  .subtitle th {font-size: 10pt}
+  #refresh {margin-top: 0}
+}

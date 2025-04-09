@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project basedir="." default="all" name="prometheus">
+    <property file="override.properties"/>
+
+    <target name="all" depends="clean,plugin" />
+
+    <target name="war" >
+        <ant dir="src" target="build" />
+    </target>
+
+    <target name="plugin" depends="war">
+        <!-- get version number -->
+        <buildnumber file="scripts/build.number" />
+        <!-- change version in servlet when you change this -->
+        <property name="release.number" value="0.1" />
+
+        <!-- make the update su3 -->
+        <copy file="LICENSE.txt" todir="plugin/" overwrite="true" />
+        <copy file="README.txt" todir="plugin/" overwrite="true" />
+        <copy file="scripts/plugin.config" todir="plugin/" overwrite="true" />
+        <exec executable="echo" osfamily="unix" failonerror="true" output="plugin/plugin.config" append="true">
+            <arg value="update-only=true" />
+        </exec>
+        <exec executable="echo" osfamily="unix" failonerror="true" output="plugin/plugin.config" append="true">
+            <arg value="version=${release.number}-b${build.number}" />
+        </exec>
+        <mkdir dir="plugin/console/webapps" />
+        <copy file="src/build/prometheus.war" todir="plugin/console/webapps/" overwrite="true" />
+        <input message="Enter su3 signing key password:" addproperty="release.password.su3" />
+        <fail message="You must enter a password." >
+            <condition>
+                <equals arg1="${release.password.su3}" arg2=""/>
+            </condition>
+        </fail>
+        <!-- this will fail if no su3 keys exist, as it needs the password twice -->
+        <exec executable="scripts/makeplugin.sh" inputstring="${release.password.su3}" failonerror="true" >
+            <arg value="plugin" />
+        </exec>
+        <move file="prometheus.su3" tofile="prometheus-update.su3" overwrite="true" />
+
+        <!-- make the install su3 -->
+        <copy file="scripts/plugin.config" todir="plugin/" overwrite="true" />
+        <!-- Files in installer but not update. Be sure to Add to delete fileset above and clean target below -->
+        <exec executable="echo" osfamily="unix" failonerror="true" output="plugin/plugin.config" append="true">
+            <arg value="version=${release.number}-b${build.number}" />
+        </exec>
+        <exec executable="scripts/makeplugin.sh" inputstring="${release.password.su3}" failonerror="true" >
+            <arg value="plugin" />
+        </exec>
+    </target>
+
+    <target name="distclean" depends="clean" />
+
+    <target name="clean" >
+        <ant dir="src" target="clean" />
+        <defaultexcludes remove="**/*~"/>
+        <delete>
+            <fileset dir="." includes="*/*.~ **/*.*~ */**/*.*~ *.*~" />
+        </delete>
+        <delete file="plugin/plugin.config" />
+        <delete file="plugin/console/webapps/prometheus.war" />
+        <delete file="plugin/LICENSE.txt" />
+        <delete file="plugin/README.txt" />
+        <delete file="prometheus.su3" />
+        <delete file="prometheus-update.su3" />
+        <delete file="plugin.zip" />
+    </target>
+</project>

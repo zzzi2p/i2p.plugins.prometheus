@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="all" name="prometheus">
+    <property name="i2pbase" value="../../i2p.i2p"/>
+    <property name="i2plib" value="${i2pbase}/build"/>
+    <property name="jettylib" value="${i2pbase}/apps/jetty/jettylib"/>
+    <path id="cp">
+        <pathelement path="${java.class.path}" />
+        <pathelement location="${i2plib}/i2p.jar" />
+        <pathelement location="${jettylib}/jasper-runtime.jar" />
+        <pathelement location="${jettylib}/javax.servlet.jar" />
+        <pathelement location="${jettylib}/jetty-util.jar" />
+    </path>
+
+    <target name="all" depends="clean, build" />
+    <target name="build" depends="war" />
+    <target name="builddep">
+    </target>
+
+    <property name="prom.version" value="1.3.6" />
+
+    <property name="javac.compilerargs" value="" />
+    <property name="javac.version" value="1.8" />
+
+    <target name="jar" >
+        <jar destfile="build/prometheus.jar" >
+            <zipfileset src="../lib/prometheus-metrics-config-${prom.version}.jar" excludes="META-INF META-INF/**/*" />
+            <zipfileset src="../lib/prometheus-metrics-core-${prom.version}.jar" excludes="META-INF META-INF/**/*" />
+            <zipfileset src="../lib/prometheus-metrics-exporter-common-${prom.version}.jar" excludes="META-INF META-INF/**/*" />
+            <zipfileset src="../lib/prometheus-metrics-exporter-servlet-javax-${prom.version}.jar" excludes="META-INF META-INF/**/*" />
+            <zipfileset src="../lib/prometheus-metrics-exposition-textformats-${prom.version}.jar" excludes="META-INF META-INF/**/*" />
+            <zipfileset src="../lib/prometheus-metrics-instrumentation-jvm-${prom.version}.jar" excludes="META-INF META-INF/**/*" />
+            <zipfileset src="../lib/prometheus-metrics-model-${prom.version}.jar" excludes="META-INF META-INF/**/*" />
+            <zipfileset src="../lib/prometheus-metrics-tracer-common-${prom.version}.jar" excludes="META-INF META-INF/**/*" />
+            <zipfileset src="../lib/prometheus-metrics-tracer-initializer-${prom.version}.jar" excludes="META-INF META-INF/**/*" />
+        </jar>
+    </target>    
+
+    <target name="compile" depends="jar" >
+        <mkdir dir="./build" />
+        <mkdir dir="./build/obj" />
+        <javac 
+            srcdir="./java" 
+            debug="true" deprecation="on" source="${javac.version}" target="${javac.version}" 
+            destdir="./build/obj" 
+            includeAntRuntime="false"
+            classpath="${i2plib}/i2p.jar:${jettylib}/javax.servlet.jar:build/prometheus.jar" >
+            <compilerarg line="${javac.compilerargs}" />
+        </javac>
+    </target>
+
+    <target name="precompilejsp" depends="compile" >
+        <mkdir dir="build" />
+        <mkdir dir="build/war/WEB-INF/classes" />
+        <copy file="jsp/WEB-INF/web.xml" tofile="build/web.xml" overwrite="true" />
+    </target>
+
+    <target name="war" depends="precompilejsp"> 
+        <!-- add css and resources -->
+        <copy todir="build/war/resources" overwrite="true" >
+            <fileset dir="../resources" />
+        </copy>
+        <war destfile="build/prometheus.war" webxml="build/web.xml">
+            <classes dir="./build/obj" />
+            <fileset dir="./build/war" />
+            <zipfileset src="build/prometheus.jar" excludes="META-INF META-INF/**/*" prefix="WEB-INF/classes/" />
+        </war>
+    </target>
+
+    <target name="clean">
+        <delete dir="./build" />
+    </target>
+
+    <target name="cleandep" depends="clean">
+    </target>
+    <target name="distclean" depends="clean">
+    </target>
+</project>
