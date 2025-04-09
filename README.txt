@@ -16,6 +16,9 @@ Edit /etc/prometheus/prometheus.yml and add:
   - job_name: i2p
     scrape_interval: 60s
     metrics_path: /prometheus/metrics
+    basic_auth:                                     # only if console is password protected, see below
+      username: xxxxxxx                             # only if console is password protected, see below
+      password: 00000000000000000000000000000000    # only if console is password protected, see below
     static_configs:
       - targets: ['localhost:7657']
 
@@ -32,3 +35,27 @@ and see i2p_* and jvm_* metrics to graph at:
   http://localhost:9090/classic/graph
 
 For a nicer dashboard, use Grafana, and add Prometheus Server as a data source.
+
+
+Password protected console
+--------------------------
+
+This workaround is necessary because Prometheus Server does not
+support Digest authentication, and Jetty does not support both
+Digest and Basic authentication at the same time.
+
+Requires router 2.8.2-3 or higher.
+
+The username is the same as your regular console username.
+The password is the 32-digit MD5 hash of your password.
+
+You may find the MD5 hash in ~/.i2p/router.config in the line:
+
+  routerconsole.auth.i2prouter.username.md5=00000000000000000000000000000000
+
+or generate the MD5 hash as follows:
+
+  echo -n 'console:i2prouter:yourpassword' | md5sum
+
+When you install the plugin for the first time, your browser will ask for
+the MD5 password to access the plugin. Enter the 32-digit hash.
