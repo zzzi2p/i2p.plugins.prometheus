@@ -51,7 +51,7 @@ public class PromManager implements ClientApp {
 
     private ClientAppState _state = UNINITIALIZED;
 
-    public static final String VERSION = "0.1";
+    public static final String VERSION = "0.2";
 
     public PromManager(I2PAppContext ctx, ClientAppManager mgr, String args[]) {
         _context = ctx;

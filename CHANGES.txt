@@ -1,5 +1,5 @@
-2025-04-xx [0.2]
-  - Add units using heuristics
+2025-04-10 [0.2]
+  - Add units using heuristics (All seconds and bytes metrics renamed)
   - Scale time unit ms to seconds
   - Add rate event counters
   - Add frequency event counters
