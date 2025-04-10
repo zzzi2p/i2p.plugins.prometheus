@@ -1,2 +1,11 @@
+2025-04-xx [0.2]
+  - Add units using heuristics
+  - Scale time unit ms to seconds
+  - Add rate event counters
+  - Add frequency event counters
+  - Add version infos
+  - build.xml cleanups
+  - CSS updates courtesy drzed
+
 2025-04-09 [0.1]
   - Initial release

@@ -3,13 +3,6 @@
     <property name="i2pbase" value="../../i2p.i2p"/>
     <property name="i2plib" value="${i2pbase}/build"/>
     <property name="jettylib" value="${i2pbase}/apps/jetty/jettylib"/>
-    <path id="cp">
-        <pathelement path="${java.class.path}" />
-        <pathelement location="${i2plib}/i2p.jar" />
-        <pathelement location="${jettylib}/jasper-runtime.jar" />
-        <pathelement location="${jettylib}/javax.servlet.jar" />
-        <pathelement location="${jettylib}/jetty-util.jar" />
-    </path>
 
     <target name="all" depends="clean, build" />
     <target name="build" depends="war" />
@@ -43,7 +36,7 @@
             debug="true" deprecation="on" source="${javac.version}" target="${javac.version}" 
             destdir="./build/obj" 
             includeAntRuntime="false"
-            classpath="${i2plib}/i2p.jar:${jettylib}/javax.servlet.jar:build/prometheus.jar" >
+            classpath="${i2plib}/i2p.jar:${i2plib}/router.jar:${jettylib}/javax.servlet.jar:build/prometheus.jar" >
             <compilerarg line="${javac.compilerargs}" />
         </javac>
     </target>

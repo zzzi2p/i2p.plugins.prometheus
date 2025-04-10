@@ -36,7 +36,7 @@ public class PrometheusServlet extends BasicServlet {
     // for now, use console bundle, hope to pick up a few translations for free
     private static final String BUNDLE = "net.i2p.router.web.messages";
     private static final String RESOURCES = "/prometheus/resources/";
-    private static final String VERSION = "0.1";
+    private static final String VERSION = PromManager.VERSION;
 
     public PrometheusServlet() {
         super();
@@ -212,7 +212,7 @@ public class PrometheusServlet extends BasicServlet {
             buf.append("<p>Full stats are enabled.</p>\n");
         else
             buf.append("<p>For more metrics, <a href=\"/configstats\">enable full stats</a> and restart.</p>\n");
-        buf.append("<p>Prometheus server configuration - add to /etc/prometheus/prometheus.yml:</p>\n");
+        buf.append("<p>Prometheus server configuration: add to <code>/etc/prometheus/prometheus.yml</code>:</p>\n");
         int port = _context.portMapper().getPort(PortMapper.SVC_CONSOLE);
         if (port <= 0)
             port = 7657;
@@ -223,9 +223,9 @@ public class PrometheusServlet extends BasicServlet {
                    "    static_configs:\n" +
                    "      - targets: ['localhost:").append(port).append("']\n" +
                    "</pre>\n");
-        buf.append("<p>For password-protected or SSL consoles, see the file <tt>")
+        buf.append("<p>For password-protected or SSL consoles, see the file <code>")
            .append(_context.getConfigDir())
-           .append("/plugins/prometheus/README.txt</tt> for instructions.</p>\n");
+           .append("/plugins/prometheus/README.txt</code> for instructions.</p>\n");
         buf.append("</div>\n");
         return buf.toString();
     }

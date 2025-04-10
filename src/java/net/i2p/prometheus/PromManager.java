@@ -15,18 +15,25 @@ package net.i2p.prometheus;
  */
 
 import java.net.Socket;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 
+import io.prometheus.metrics.core.metrics.CounterWithCallback;
 import io.prometheus.metrics.core.metrics.GaugeWithCallback;
+import io.prometheus.metrics.core.metrics.Info;
 import io.prometheus.metrics.instrumentation.jvm.JvmMetrics;
+import io.prometheus.metrics.model.snapshots.Unit;
 import io.prometheus.metrics.model.registry.PrometheusRegistry;
 
 import net.i2p.I2PAppContext;
 import net.i2p.app.*;
 import static net.i2p.app.ClientAppState.*;
 import net.i2p.data.DataHelper;
+import net.i2p.router.RouterVersion;
+import net.i2p.stat.Frequency;
+import net.i2p.stat.FrequencyStat;
 import net.i2p.stat.Rate;
 import net.i2p.stat.RateStat;
 import net.i2p.stat.StatManager;
@@ -43,6 +50,8 @@ public class PromManager implements ClientApp {
     private int i2pCount, jvmCount;
 
     private ClientAppState _state = UNINITIALIZED;
+
+    public static final String VERSION = "0.1";
 
     public PromManager(I2PAppContext ctx, ClientAppManager mgr, String args[]) {
         _context = ctx;
@@ -62,7 +71,7 @@ public class PromManager implements ClientApp {
     }
 
     /**
-     *  This adds the stats present at plugin startup.
+     *  This adds the rate and frequency stats present at plugin startup.
      *  TODO: add a monitor to add stats that appear later.
      */
     private void addStats() {
@@ -74,18 +83,28 @@ public class PromManager implements ClientApp {
             String pfx = "i2p.";
             for (String s : e.getValue()) {
                 RateStat rs = sm.getRate(s);
-                if (rs == null)
-                    continue;
-                String desc = rs.getDescription();
-                if (desc == null)
-                    desc = "";
-                long[] pers = rs.getPeriods();
-                final long per = pers[0];
-                final Rate rate = rs.getRate(per);
-                if (rate == null)
-                    continue;
+                FrequencyStat fs = null;
+                Rate rate = null;
+                long per = 0;
+                String desc;
 
-                String name = pfx + s + '.' + DataHelper.formatDuration(per);
+                if (rs != null) {
+                    desc = rs.getDescription();
+                    if (desc == null)
+                        desc = "";
+                    long[] pers = rs.getPeriods();
+                    per = pers[0];
+                    rate = rs.getRate(per);
+                    if (rate == null)
+                        continue;
+                } else {
+                    fs = _context.statManager().getFrequency(s);
+                    if (fs == null)
+                        continue;
+                    desc = fs.getDescription();
+                }
+
+                String name = pfx + s;
                 name = name.replace(".", "_");
                 name = name.replace("-", "_");
                 // https://prometheus.io/docs/concepts/data_model/#metric-names-and-labels
@@ -96,23 +115,104 @@ public class PromManager implements ClientApp {
                     continue;
                 }
 
-                if (_log.shouldDebug())
-                    _log.debug("adding gauge " + name);
-
-                GaugeWithCallback.builder()
-                    .name(name)
-                    .help(desc)
-                    .labelNames("state")
-                    .callback(callback -> {
-                        callback.call(rate.getAvgOrLifetimeAvg(), "average");
-                    })
-                    .register();
+                if (rate != null) {
+                    if (_log.shouldDebug())
+                        _log.debug("adding gauge " + name);
+                    if (addStat(rate, per, name, desc))
+                        n++;
+                } else {
+                    if (_log.shouldDebug())
+                        _log.debug("adding counter " + name);
+                    addFreq(fs, name, desc);
+                }
                 n++;
             }
         }
         i2pCount = n;
         if (_log.shouldDebug())
             _log.info(n + " PromManager I2P metrics registered");
+    }
+
+    /**
+     *  This adds a single stat.
+     *  It adds bytes or seconds units based on some heuristics.
+     *  If the units cannot be determined, it also adds an event counter.
+     *  @return true if we added an event counter also.
+     */
+    private static boolean addStat(final Rate rate, long period, String name, String desc) {
+        boolean rv = false;
+        GaugeWithCallback.Builder gwcb = GaugeWithCallback.builder()
+            .help(desc)
+            .labelNames("state");
+        // heuristics
+        String nlc = name.toLowerCase(Locale.US);
+        if (nlc.contains("time") || nlc.contains("delay") || nlc.contains("lag")) {
+            // All our stats are in ms
+            gwcb.unit(Unit.SECONDS)
+                .callback(callback -> {
+                    callback.call(rate.getAvgOrLifetimeAvg() / 1000, "average");
+                });
+        } else if (nlc.contains("size") || nlc.contains("memory") ||
+                   nlc.contains("bps") || nlc.contains("bandwidth")) {
+            gwcb.unit(Unit.BYTES)
+                .callback(callback -> {
+                    callback.call(rate.getAvgOrLifetimeAvg(), "average");
+                });
+        } else {
+            gwcb.callback(callback -> {
+                callback.call(rate.getAvgOrLifetimeAvg(), "average");
+            });
+            // events
+            // Add a _count unit
+            // Prometheus adds _total
+            CounterWithCallback.builder()
+                .name(name + "_count")
+                .help(desc)
+                .callback(callback -> {
+                    callback.call(rate.getLifetimeEventCount());
+                })
+                .register();
+            rv = true;
+        }
+        name += '_' + DataHelper.formatDuration(period);
+        gwcb.name(name)
+            .register();
+        return rv;
+    }
+
+    /**
+     *  This adds a single counter.
+     */
+    private static void addFreq(final FrequencyStat fs, String name, String desc) {
+        // Add a _count unit
+        // Prometheus adds _total
+        CounterWithCallback.builder()
+            .name(name + "_count")
+            .help(desc)
+            .callback(callback -> {
+                callback.call(fs.getEventCount());
+            })
+            .register();
+    }
+
+    /**
+     *  Add some constant "Info" metrics
+     */
+    private static void addInfos() {
+        addInfo("i2p_info", "I2P info", "version", RouterVersion.FULL_VERSION);
+        addInfo("i2p_plugin_info", "I2P Plugin Info", "version", VERSION);
+    }
+
+    /**
+     *  Add some constant "Info" metrics
+     */
+    private static void addInfo(String name, String help, String label, String value) {
+        Info.builder()
+            .name(name)
+            .help(help)
+            .labelNames(label)
+            .register()
+            .addLabelValues(value);
     }
 
 
@@ -130,6 +230,7 @@ public class PromManager implements ClientApp {
             _log.info(jvmCount + " PromManager JVM metrics registered");
 
         addStats();
+        addInfos();
         changeState(RUNNING);
         _mgr.register(this);
     }

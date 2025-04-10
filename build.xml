@@ -11,10 +11,11 @@
     <target name="plugin" depends="war">
         <!-- get version number -->
         <buildnumber file="scripts/build.number" />
-        <!-- change version in servlet when you change this -->
+        <!-- change version in PromManager when you change this -->
         <property name="release.number" value="0.1" />
 
         <!-- make the update su3 -->
+        <copy file="CHANGES.txt" todir="plugin/" overwrite="true" />
         <copy file="LICENSE.txt" todir="plugin/" overwrite="true" />
         <copy file="README.txt" todir="plugin/" overwrite="true" />
         <copy file="scripts/plugin.config" todir="plugin/" overwrite="true" />
@@ -59,6 +60,7 @@
         </delete>
         <delete file="plugin/plugin.config" />
         <delete file="plugin/console/webapps/prometheus.war" />
+        <delete file="plugin/CHANGES.txt" />
         <delete file="plugin/LICENSE.txt" />
         <delete file="plugin/README.txt" />
         <delete file="prometheus.su3" />
