@@ -1,4 +1,4 @@
-/* I2P Socks Proxy Plugin Theme by dr|z3d 2022 */
+/* I2P Prometheus plugin theme by dr|z3d */
 
 :root {
   --a: #3b6bbf;
@@ -8,43 +8,46 @@
   --bg_status: var(--bg_table);
   --bg_table: #f2f2ff;
   --bodybg: var(--bg) url(images/tile2.png) fixed;
-  --bodyfont: 10.5pt Droid Sans, Open Sans, Noto Sans, Ubuntu, Segoe UI, Verdana, Helvetica Neue, sans-serif;
+  --bodyfont: 10.5pt Open Sans, Segoe UI, Noto Sans, Verdana, Helvetica Neue, sans-serif;
   --border: 1px solid #6c6c93;
   --border_inner: 1px solid #9898b3;
+  --btn_active: var(--btn_hover);
   --btn_border: 1px solid #97a2ce;
   --btn_hover: linear-gradient(180deg, #ddd, #fff);
-  --btn_active: var(--btn_hover);
   --btn: linear-gradient(180deg, #fff, #e8e8ff);
   --btn_shadow_active: var(--highlight), inset 4px 4px 4px rgba(0,0,0,.5);
+  --codebg:#9d94;
+  --configure: url(images/configure.svg);
   --container: linear-gradient(90deg, #fff, #efefff, #fff);
+  --cross: url(images/cross.svg);
   --filter_shadow: drop-shadow(0 0 1px var(--hover)) drop-shadow(0 0 2px var(--hover));
   --highlight: inset 0 0 0 1px #fff;
   --highlight_notice: var(--highlight), inset 0 0 1px 1px #900, 0 0 2px 2px rgba(0,0,0,.2);
   --hover: #f60;
+  --infohelp: url(images/infohelp.svg);
+  --infobox_shadow: 0 0 0 1px #aaa, 0 0 0 1px #fffd inset, 3px 3px 3px #0002;
   --ink: #4f4f63;
   --ink_light: #5b5b71;
   --ink_status_hover: #292d3d;
-  --input_text: var(--bg_table);
   --input_text_focus: #fff;
-  --monospaced: Droid Sans Mono, Noto Mono, DejaVu Sans Mono, Lucida Console, monospace;
+  --input_text: var(--bg_table);
+  --logo: url(images/prometheus.svg);
+  --monospaced: Fira Sans, Noto Mono, DejaVu Sans Mono, Lucida Console, monospace;
   --outline: 0 0 0 1px rgba(255,96,0,.5);
   --rowEven: repeating-linear-gradient(135deg, rgba(252,252,255,.5) 2px, rgba(240, 240, 255, .3) 3px, #fafaff 5px) #f0f0ff;
   --rowOdd: repeating-linear-gradient(45deg, rgba(255,255,255,.5) 2px, rgba(220, 220, 255, .3) 3px, #fafaff 5px), #fafaff;
   --scrollbar_hover: rgba(16,16,48,.4) var(--bg);
   --scrollbar: rgba(16,16,48,.3) rgba(0,0,0,0);
   --selected: #77f;
-  --shadow_table: 0 0 1px 0 #bbc;
   --shadow_input: var(--highlight), inset 1px 1px 1px 1px rgba(0,0,0,.6);
+  --shadow_table: 0 0 1px 0 #bbc;
+  --starting: url(images/starting.svg);
   --th: linear-gradient(180deg, #fcfcff 50%, #f2f2ff 50%, #efefff);
   --th_sub: linear-gradient(180deg, #fdfdff, #f0f0ff);
+  --tick: url(images/tick.svg);
   --txtshadow_title: 0 1px 1px #fff, 0 -1px 1px #e2e2ff, 0 2px 1px #ddf;
   --visited: #2c4e8f;
-  --configure: url(images/configure.svg);
-  --cross: url(images/cross.svg);
-  --infohelp: url(images/infohelp.svg);
-  --socks: url(images/prometheus.svg);
-  --starting: url(images/starting.svg);
-  --tick: url(images/tick.svg);
+  --eye:url("data:image/svg+xml,%3Csvg viewBox='0 0 64 64' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='m63.95 33.1a2.03 2.03 0 0 0 0-1.97c-6.13-11.3-18.1-18.95-31.85-18.95s-25.7 7.66-31.85 18.94a2.03 2.03 0 0 0 0 1.97c6.13 11.3 18.1 18.95 31.85 18.95s25.7-7.67 31.85-18.95z' fill='%234d5f80'/%3E%3Cpath d='m32.1 47.4c-8.45 0-15.3-6.85-15.3-15.3s6.85-15.3 15.3-15.3 15.3 6.85 15.3 15.3-6.85 15.3-15.3 15.3z' fill='%23fff'/%3E%3Cpath d='m32.1 24.3a7.72 7.72 0 0 0 -1.87.22 4.05 4.05 0 0 1 .99 2.65c0 2.24-1.8 4.04-4.04 4.04-1 0-1.93-.37-2.65-1a7.66 7.66 0 0 0 -.22 1.87 7.79 7.79 0 0 0 7.79 7.79c4.3 0 7.8-3.5 7.8-7.8s-3.5-7.8-7.8-7.8z' fill='%234d5f80'/%3E%3C/svg%3E");
 }
 
 @media (prefers-color-scheme: light) {
@@ -73,6 +76,7 @@
     --highlight: inset 0 0 0 1px rgba(255,255,255,.1);
     --highlight_notice: var(--highlight), inset 0 0 1px 1px #300, 0 0 2px 2px rgba(0,0,0,.5);
     --hover: #f60;
+    --infobox_shadow: 0 0 0 1px #111, 0 0 0 1px #fff2 inset, 3px 3px 3px #0004;
     --ink: #ddd;
     --ink_light: #eee;
     --ink_status_hover: #fff;
@@ -87,6 +91,7 @@
     --th_sub: linear-gradient(180deg, #333, #222);
     --txtshadow_title: 0 0 0 1px #000;
     --visited: #2c4e8f;
+    --eye:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath fill='%23ddd' d='M64 33.1a2 2 0 000-2 36.2 36.2 0 00-63.8 0 2 2 0 000 2A36.2 36.2 0 0064 33z'/%3E%3Cpath d='M32.1 47.4a15.3 15.3 0 110-30.6 15.3 15.3 0 010 30.6z'/%3E%3Cpath fill='%23ddd' d='M32.1 24.3a7.7 7.7 0 00-1.9.2 4 4 0 011 2.7 4 4 0 01-6.7 3 7.7 7.7 0 00-.2 1.9 7.8 7.8 0 007.8 7.8 7.8 7.8 0 000-15.6z'/%3E%3C/svg%3E");
   }
   #expand img, #collapse img {
     filter: invert(1) opacity(.7);
@@ -303,7 +308,7 @@ th, #configtitle {
   letter-spacing: .08em !important;
   line-height: 1.1;
   text-shadow: var(--txtshadow_title);
-  background: var(--socks) no-repeat 6px center / 32px, var(--th);
+  background: var(--logo) no-repeat 6px center / 32px, var(--th);
 }
 
 #configsection, #configsection td {
@@ -322,6 +327,7 @@ th, #configtitle {
 #configuration {
   position: relative;
   border: none;
+  width: 100%;
 }
 
 #configuration tr {
@@ -356,6 +362,29 @@ th, #configtitle {
   line-height: 1.1;
 }
 
+#configuration p {
+  padding: 5px 28px;
+}
+
+#configuration pre {
+  margin: 0 28px;
+  padding: 20px;
+  font-weight: 600;
+  border: 1px solid var(--border_inner);
+  border-radius: 6px;
+  background: var(--codebg);
+  box-shadow: var(--infobox_shadow);
+}
+
+#configuration pre::selection {
+  color: #fff;
+  background: #373;
+}
+
+#configuration code, #configuration tt {
+  font-weight: 600;
+}
+
 #formaction td {
   padding: 12px !important;
   background: var(--th_sub);
@@ -370,14 +399,16 @@ th, #configtitle {
   z-index: 99;
   box-sizing: border-box;
   text-transform: uppercase;
-  letter-spacing: .05em;
   font-size: 12.5pt;
-  font-weight: bold;
   border: var(--border_inner);
   border-left: none;
   border-right: none;
   background: var(--configure) no-repeat 8px center / 18px, var(--th_sub) !important;
   contain: paint;
+}
+
+#configtitle b {
+  font-weight: 700;
 }
 
 #expand, #collapse {
@@ -420,7 +451,6 @@ th, #configtitle {
   display: inline-block;
   height: 100%;
   width: 100%;
-  background: #f00;
 }
 
 #configuration td:nth-child(2) code {
@@ -476,9 +506,10 @@ td:last-child {
   background: var(--th);
 }
 
-input[type=text], input[type=password], input[type=submit] {
+input[type=text], input[type=password], input[type=submit], a[href$="metrics"] {
   font: var(--bodyfont);
   border: var(--border_inner);
+  font-weight: 600;
 }
 
 input[type=text], input[type=password] {
@@ -495,7 +526,7 @@ input[type=text]:focus, input[type=password]:focus {
   outline: none;
 }
 
-input[type=submit] {
+input[type=submit], a[href$="metrics"] {
   padding: 7px 14px 7px 30px;
   color: var(--ink);
   border-radius: 4px;
@@ -504,15 +535,30 @@ input[type=submit] {
   cursor: pointer;
 }
 
-input[type=submit]:hover {
+a[href$="metrics"] {
+  margin: -5px 0 0;
+  float: right;
+  background: var(--eye) no-repeat 12px center / 14px, var(--btn);
+}
+
+input[type=submit]:hover, a[href$="metrics"]:hover {
   color: var(--ink_lighter);
   background: var(--tick) no-repeat 12px center / 12px, var(--btn_hover);
   box-shadow: var(--highlight), var(--outline);
 }
 
-input[type=submit]:active {
+a[href$="metrics"]:hover {
+  background: var(--eye) no-repeat 12px center / 14px, var(--btn_hover);
+}
+
+
+input[type=submit]:active, a[href$="metrics"]:active {
   box-shadow: var(--btn_shadow_active), var(--outline);
   background: var(--tick) no-repeat 12px center / 12px, var(--btn_active);
+}
+
+a[href$="metrics"]:active {
+  background: var(--eye) no-repeat 12px center / 14px, var(--btn_active);
 }
 
 #message {
@@ -549,9 +595,9 @@ input[type=submit]:active {
 @media screen and (max-width: 1000px) {
   body {margin: 3px}
   body, table {font-size: 9.5pt}
+  .subtitle th {font-size: 10pt}
   #container {margin: 0}
   #title {font-size: 14pt}
   #configtitle {font-size: 12pt}
-  .subtitle th {font-size: 10pt}
   #refresh {margin-top: 0}
 }
