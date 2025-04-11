@@ -223,6 +223,7 @@ public class PrometheusServlet extends BasicServlet {
                    "    static_configs:\n" +
                    "      - targets: ['localhost:").append(port).append("']\n" +
                    "</pre>\n");
+        buf.append("<p>And then: <code>sudo killall -HUP prometheus</code> to force reload of the config.</p>\n");
         buf.append("<p>For password-protected or SSL consoles, see the file <code>")
            .append(_context.getConfigDir())
            .append("/plugins/prometheus/README.txt</code> for instructions.</p>\n");
