@@ -156,13 +156,15 @@ public class PromManager implements ClientApp {
             .labelNames("state");
         // heuristics
         String nlc = name.toLowerCase(Locale.US);
-        if (nlc.contains("time") || nlc.contains("delay") || nlc.contains("lag")) {
+        if (nlc.contains("time") || nlc.contains("delay") || nlc.contains("lag") ||
+            nlc.contains("_skew_")) {
             // All our stats are in ms
             gwcb.unit(Unit.SECONDS)
                 .callback(callback -> {
                     callback.call(rate.getAvgOrLifetimeAvg() / 1000, "average");
                 });
         } else if (nlc.contains("size") || nlc.contains("memory") ||
+                   nlc.contains("sendrate") || nlc.contains("recvrate") ||
                    nlc.contains("bps") || nlc.contains("bandwidth")) {
             gwcb.unit(Unit.BYTES)
                 .callback(callback -> {
