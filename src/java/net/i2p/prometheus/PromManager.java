@@ -15,6 +15,7 @@ package net.i2p.prometheus;
  */
 
 import java.net.Socket;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -38,6 +39,7 @@ import net.i2p.stat.Rate;
 import net.i2p.stat.RateStat;
 import net.i2p.stat.StatManager;
 import net.i2p.util.Log;
+import net.i2p.util.SimpleTimer2;
 
 /**
  *
@@ -47,7 +49,9 @@ public class PromManager implements ClientApp {
     private final I2PAppContext _context;
     private final Log _log;
     private final ClientAppManager _mgr;
+    private final Set<String> _registered;
     private int i2pCount, jvmCount;
+    private SimpleTimer2.TimedEvent _timer;
 
     private ClientAppState _state = UNINITIALIZED;
 
@@ -57,6 +61,7 @@ public class PromManager implements ClientApp {
         _context = ctx;
         _log = ctx.logManager().getLog(PromManager.class);
         _mgr = mgr;
+        _registered = new HashSet<String>(256);
         _state = INITIALIZED;
     }
 
@@ -72,16 +77,18 @@ public class PromManager implements ClientApp {
 
     /**
      *  This adds the rate and frequency stats present at plugin startup.
-     *  TODO: add a monitor to add stats that appear later.
+     *  Also run by the timer to add new stats later.
      */
     private void addStats() {
         StatManager sm = _context.statManager();
         Map<String, SortedSet<String>> groups = sm.getStatsByGroup();
         int n = 0;
+        String pfx = "i2p.";
         for (Map.Entry<String, SortedSet<String>> e : groups.entrySet()) {
             //String pfx = "i2p." + e.getKey() + '.';
-            String pfx = "i2p.";
             for (String s : e.getValue()) {
+                if (_registered.contains(s))
+                    continue;
                 RateStat rs = sm.getRate(s);
                 FrequencyStat fs = null;
                 Rate rate = null;
@@ -125,12 +132,15 @@ public class PromManager implements ClientApp {
                         _log.debug("adding counter " + name);
                     addFreq(fs, name, desc);
                 }
+                _registered.add(s);
                 n++;
             }
         }
-        i2pCount = n;
-        if (_log.shouldDebug())
-            _log.info(n + " PromManager I2P metrics registered");
+        if (n > 0) {
+            i2pCount += n;
+            if (_log.shouldDebug())
+                _log.info(n + " PromManager I2P metrics registered");
+        }
     }
 
     /**
@@ -215,6 +225,22 @@ public class PromManager implements ClientApp {
             .addLabelValues(value);
     }
 
+    /**
+     *  Monitor to add stats that appear later.
+     */
+    private class Adder extends SimpleTimer2.TimedEvent {
+
+        public Adder() {
+            super(_context.simpleTimer2());
+        }
+
+        public void timeReached() {
+            addStats();
+            // TODO no way to remove stats, may be a small memory leak
+            schedule(30*60*1000);
+        }
+    }
+
 
     /////// ClientApp methods
 
@@ -233,6 +259,10 @@ public class PromManager implements ClientApp {
         addInfos();
         changeState(RUNNING);
         _mgr.register(this);
+        _timer = new Adder();
+        // relatively soon to catch the stats we missed at startup.
+        // subsequent runs will be less frequent.
+        _timer.schedule(5*60*1000);
     }
 
     public synchronized void shutdown(String[] args) {
@@ -240,6 +270,13 @@ public class PromManager implements ClientApp {
         if (_state == STOPPED)
             return;
         changeState(STOPPING);
+        if (_timer != null) {
+            _timer.cancel();
+            _timer = null;
+        }
+        _registered.clear();
+        i2pCount = 0;
+        jvmCount = 0;
         // clear() supported as of v1.3.2
         PrometheusRegistry.defaultRegistry.clear();
         _mgr.unregister(this);
