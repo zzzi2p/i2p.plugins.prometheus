@@ -114,6 +114,7 @@ public class PromManager implements ClientApp {
                 String name = pfx + s;
                 name = name.replace(".", "_");
                 name = name.replace("-", "_");
+                name = name.replace(" ", "_");  // tunnel names
                 // https://prometheus.io/docs/concepts/data_model/#metric-names-and-labels
                 // Prevent IllegalArgumentExceptions
                 if (name.replaceAll("[a-zA-Z0-9_]", "").length() != 0) {
