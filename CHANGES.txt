@@ -1,3 +1,9 @@
+2025-04-15 [0.3]
+  - Add timer to add stats that appear after startup
+  - More stat name fixes so they are valid metrics
+  - Add units to more metrics
+  - Add note on how to reload config
+
 2025-04-10 [0.2]
   - Add units using heuristics (All seconds and bytes metrics renamed)
   - Scale time unit ms to seconds
