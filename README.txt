@@ -25,6 +25,10 @@ Edit /etc/prometheus/prometheus.yml and add:
     static_configs:
       - targets: ['localhost:7657']                 # or 7667 or other SSL port
 
+Then verify your configuration changes:
+
+  promtool check config /etc/prometheus/prometheus.yml
+
 And then tell prometheus to reload the config:
 
   sudo killall -HUP prometheus
@@ -38,6 +42,15 @@ and see i2p_* and jvm_* metrics to graph at:
   http://localhost:9090/classic/graph
 
 For a nicer dashboard, use Grafana, and add Prometheus Server as a data source.
+
+
+Grafana Tips
+------------
+
+After adding Prometheus Server as a data source, go to Drilldown -> Metrics.
+Set "View By" to "i2p_".
+Set Time Range to "Last 12 hours"
+Look for interesting metrics, or type something in the "Search metrics" box.
 
 
 Password protected console
