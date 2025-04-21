@@ -156,8 +156,7 @@ public class PromManager implements ClientApp {
     private static boolean addStat(final Rate rate, long period, String name, String desc) {
         boolean rv = false;
         GaugeWithCallback.Builder gwcb = GaugeWithCallback.builder()
-            .help(desc)
-            .labelNames("state");
+            .help(desc);
         // heuristics
         String nlc = name.toLowerCase(Locale.US);
         if (nlc.contains("time") || nlc.contains("delay") || nlc.contains("lag") ||
@@ -165,18 +164,18 @@ public class PromManager implements ClientApp {
             // All our stats are in ms
             gwcb.unit(Unit.SECONDS)
                 .callback(callback -> {
-                    callback.call(rate.getAvgOrLifetimeAvg() / 1000, "average");
+                    callback.call(rate.getAvgOrLifetimeAvg() / 1000);
                 });
         } else if (nlc.contains("size") || nlc.contains("memory") ||
                    nlc.contains("sendrate") || nlc.contains("recvrate") ||
                    nlc.contains("bps") || nlc.contains("bandwidth")) {
             gwcb.unit(Unit.BYTES)
                 .callback(callback -> {
-                    callback.call(rate.getAvgOrLifetimeAvg(), "average");
+                    callback.call(rate.getAvgOrLifetimeAvg());
                 });
         } else {
             gwcb.callback(callback -> {
-                callback.call(rate.getAvgOrLifetimeAvg(), "average");
+                callback.call(rate.getAvgOrLifetimeAvg());
             });
             // events
             // Add a _count unit
