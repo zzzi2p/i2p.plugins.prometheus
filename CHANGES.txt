@@ -1,4 +1,4 @@
-2025-04-xx [0.4]
+2025-04-29 [0.4]
   - Remove state=average labels, labels are optional, we don't use labels except for info
 
 2025-04-15 [0.3]

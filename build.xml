@@ -12,7 +12,7 @@
         <!-- get version number -->
         <buildnumber file="scripts/build.number" />
         <!-- change version in PromManager when you change this -->
-        <property name="release.number" value="0.3" />
+        <property name="release.number" value="0.4" />
 
         <!-- make the update su3 -->
         <copy file="CHANGES.txt" todir="plugin/" overwrite="true" />
